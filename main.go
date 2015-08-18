@@ -82,7 +82,7 @@ func get_url(url string, continued bool) (string, int64, int64, *http.Response, 
 		return file_name, remote_size, file_part, resp, err
 	}
 	last_slash := strings.LastIndex(resp.Request.URL.Path, "/") // Getting the index of the last slash
-	file_name = resp.Request.URL.Path[last_slash+1:]            // Saving the name of the file
+	file_name = resp.Request.URL.Path[last_slash+1:] // Saving the name of the file
 
 	if continued {
 		file_part = file_size(file_name) // Getting size of the local file
@@ -90,7 +90,7 @@ func get_url(url string, continued bool) (string, int64, int64, *http.Response, 
 		// Saving the size of the remote file
 		if file_part == resp.ContentLength {
 			remote_size = resp.ContentLength
-			// If local file and remote has diferent size, then set the range to download
+		// If local file and remote has diferent size, then set the range to download
 		} else if file_part != resp.ContentLength {
 			range_part := fmt.Sprintf("bytes=%d-%d", file_part, resp.ContentLength)
 			resp.Request.Header.Add("Range", range_part)
@@ -103,7 +103,7 @@ func get_url(url string, continued bool) (string, int64, int64, *http.Response, 
 			remote_size = resp.ContentLength + file_part
 		}
 	} else {
-		os.Remove(file_name)                                             // If there is a previous file, this is deleted
+		os.Remove(file_name) // If there is a previous file, this is deleted
 		file, err := os.OpenFile(file_name, os.O_RDWR|os.O_CREATE, 0666) // Create a new file
 		if err != nil {
 			return file_name, remote_size, file_part, resp, err
@@ -123,11 +123,11 @@ func url_reader(url string, continued bool) int64 {
 	}
 	defer resp.Body.Close()
 
-	accum := int64(file_part) // read bytes
+	accum := int64(file_part) // Read bytes
 	percent := float64(0)
 	buffer := make([]byte, BYTES)
 
-	// loop to read the remote file and write the local file
+	// Loop to read the remote file and write the local file
 	for {
 		n, err := resp.Body.Read(buffer)
 		if err != nil && err != io.EOF {
@@ -153,7 +153,7 @@ func url_reader(url string, continued bool) int64 {
 
 // Function to write the buffer in to the local file
 func file_writer(file_name string, buffer []byte, offset int64) error {
-	// For read and write access, if file don't exist this is created.
+	// For read and write access, if file doesn't exist this is created.
 	file, err := os.OpenFile(file_name, os.O_RDWR|os.O_CREATE, 0660)
 	if err != nil {
 		return err
