@@ -73,9 +73,8 @@ func show_data(url string, file_name string, remote_size int64, file_part int64,
 // Function for retrieve the data of the file from URL
 func get_url(url string, continued bool) (string, int64, int64, *http.Response, error) {
 
-	remote_size := int64(0)
-	file_part := int64(0)
-	file_name := string("")
+	var remote_size, file_part int64
+	var file_name string
 
 	resp, err := http.Get(url)
 	if err != nil {
